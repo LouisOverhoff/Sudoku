@@ -1,9 +1,7 @@
-## Willkommen beim Sudoku Solover 
+## Willkommen beim Sudoku Solver
 von Louis Overhoff
 
-You can use the [editor on GitHub](https://github.com/LouisOverhoff/Sudoku/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Dieses Python Programm löst jedes Sudoku. Hierzu müssen einfach nur die Werte im Script geändert werden.
 
 ### Markdown
 
