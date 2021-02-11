@@ -4,7 +4,7 @@ sudoku = [] #Liste für das Sudoku (beinhaltet alle Zahlen)
 # Auf eine Liste kann man mit einem Index zugreifen z.B. liste[0]
 # Bei einem Set lässt sich nur überprüfen, ob ein Element enthalten ist.bin
 
-def setupSudoku(): #Erstellt unser Sudoko und legt alle Zahlen an
+def setupSudoku(): #Erstellt Sudoko und legt alle Zahlen an
     # Beginn
     for i in range(0,81): # 81 ist nicht mehr dabei
         sudoku.append(domain) #Setzt die Zahlen 1-9 in jedes Feld = Leer
@@ -62,73 +62,58 @@ def printSudoku(): #Zeigt das Sudoku visuell an
             print(f" - ", end="")  #Zeigt '-' in jedes Feld das kein Integer ist an
     print()
 
+def rowRule():
+  for y in range(9):
+      rownumber = set()
+      for x in range(9):
+        if isinstance(getValueAtPosition(y,x),int):
+          rownumber.add(getValueAtPosition(y,x))
+      for x in range(9):
+        if not isinstance(getValueAtPosition(y,x),int):
+          setValueAtPosition(y,x, getValueAtPosition(y,x)-rownumber)
 
+def columnRule():
+  for y in range(9):
+    columnnumber = set()
+    for x in range(9):
+      if isinstance(getValueAtPosition(x,y),int):
+        columnnumber.add(getValueAtPosition(x,y))
+    for x in range(9):
+      if not isinstance(getValueAtPosition(x,y),int):
+        setValueAtPosition(x,y, getValueAtPosition(x,y)-columnnumber)
 
-
-def Zeilenregel():
-    zahlen = set()
-    for i in range(9):
-        if isinstance(getValueAtPosition(i,0),int): #Fügt alle Integer in das Zahlen Set
-            zahlen.add(getValueAtPosition(i,0))
-    #print(zahlen)
-
-def Spaltenregel():
-    Spaltenzahlen = set()
-    for k in range(9):
-        if isinstance(getValueAtPosition(0,k),int):
-            Spaltenzahlen.add(getValueAtPosition(0,k))
-    #print(Spaltenzahlen)
-
-def Kastenregel(): #Setzt die Kastenregel in Kraft für jedes Feld
-  for xx in range(3):
-   for yy in range(3):
-      Kastenzahl = set()
-      for x in range(3):
-        for y in range(3):
-          # print(f"Variablen l={l} und o={o}")
-          if isinstance(getValueAtPosition(yy*3+x,xx*3+y),int):
-            Kastenzahl.add(getValueAtPosition(yy*3+x,xx*3+y))
-            #print(f"Ausgabe Kastenregel: {Kastenzahl}")
-      for x in range(3):
-        for y in range(3):
-          if not isinstance(getValueAtPosition(yy*3+x,xx*3+y),int):
-            setValueAtPosition(yy*3+x,xx*3+y, getValueAtPosition(yy*3+x,xx*3+y)-Kastenzahl)
+def boxRule():
+  for x in range(3):
+    for y in range(3):
+      boxnumber = set()
+      for xx in range(3):
+        for yy in range(3):
+          if isinstance(getValueAtPosition(yy+y*3,xx+x*3),int):
+            boxnumber.add(getValueAtPosition(yy+y*3,xx+x*3))
+      for xx in range(3):
+        for yy in range(3):
+          if not isinstance(getValueAtPosition(yy+y*3,xx+x*3),int):
+            setValueAtPosition(yy+y*3,xx+x*3, getValueAtPosition(yy+y*3,xx+x*3)-boxnumber)
             
-def Loesung():
-  for s in range(81):
-    if isinstance(sudoku[s],set):
-      if len(sudoku[s]) == 1:
-        sudoku[s] = list(sudoku[s])[0]
+def soloveSudoku():
+  changes = False
+  for x in range(81):
+    if isinstance(sudoku[x],set):
+      if len(sudoku[x]) == 1:
+        sudoku[x] = sudoku[x].pop()
+        changes = True
 
+  return changes
+ 
 def playSudoku():
-  x = 1
-  sudokutest1 = 0
-  sudokutest2 = 1
-  botschritt = 0
-  while x == 1:
-    while sudokutest1 != sudokutest2 :
-      sudokutest1 = list(sudoku)
-      Kastenregel()
-      Zeilenregel()
-      Spaltenregel()
-      Loesung()
-      sudokutest2 = list(sudoku)
-      if sudokutest1 == sudokutest2:
-        break
-      botschritt = botschritt + 1
-      print(f'Bot Schritt: {botschritt}')
-      printSudoku()
-      print('_____________________________________________')
-      ende = 0
-      for i in range(81):
-        if isinstance(sudoku[i],int):
-          ende += 1
-      if ende == 81:
-        x = 0
-        print(f'Bot konnte das Sudoku nach {botschritt} Schritten lösen')
-        break
-    if sudokutest1 == sudokutest2: 
-      print(f'Bot konnte das Sudoku nach {botschritt} Schritten nicht lösen')
-      x = 0
+  printSudoku()
+  changes = True
+  while changes:
+    boxRule()
+    rowRule()
+    columnRule()
+    changes = soloveSudoku()
+    printSudoku()
 
+setupSudoku()
 playSudoku()
